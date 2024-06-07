@@ -1,5 +1,5 @@
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import BoxList from './components/BoxList';
 import Navbar from './components/Navbar';
@@ -53,6 +53,7 @@ const tempWatchedData = [
   },
 ];
 
+const KEY="a97ded1a"
 
 const average = (arr) => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
 
@@ -61,14 +62,27 @@ function App() {
   const num = movie.length;
   const [watched, setWatched] = useState(tempWatchedData)
 
+  //const [search,setSearch]=useState('')
+
   const avgimdbRating = average(watched.map((movi) => movi.imdbRating))
   const avgruntime = average(watched.map((movi) => movi.runtime))
   const avguserRating = average(watched.map((movi) => movi.userRating))
+
+ 
+
+   useEffect( function () {
+    fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=pakistan`)
+    .then((res)=>res.json())
+    .then((data)=>setmovie(data.Search))
+   
+  },[])
+  
+
   return (
     <div className="App">
-      <Navbar>
+      <Navbar >
         <Logo />
-        <Search />
+        <Search/>
         <NumMovies num={num} />
       </Navbar>
       <BoxList movie={movie} watched={watched} avgimdbRating={avgimdbRating} avgruntime={avgruntime} avguserRating={avguserRating} />

@@ -5,7 +5,7 @@ const Search = () => {
 
     return (
         <div>
-            <input type="text" className="search" placeholder="Search here..." value={query} onChange={(e) => setquery(e.target.value)} />
+            <input type="text" className="search" placeholder="Search here..."  value={query} onChange={(e) => setquery(e.target.value)} />
         </div>
     )
 }
