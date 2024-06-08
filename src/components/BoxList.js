@@ -2,23 +2,40 @@ import React, { useState } from 'react'
 import MovieList from './MovieList'
 import WachedList from './WachedList'
 import Movie from './Movie'
-const BoxList = ({movie,watched,avgimdbRating,avgruntime,avguserRating}) => {
-    const [isOpen2,setisOpen2]=useState(true)
+import Loader from './Loader'
+import ErrorMessage from './ErrorMessage'
+import MovieDetails from './MovieDetails'
+const BoxList = ({ movie, watched, avgimdbRating, avgruntime, avguserRating, Load, error, selectedID, onSelected,onCloseMovie }) => {
+  const [isOpen2, setisOpen2] = useState(true)
 
   return (
-   
+
     <main className="main">
-        <MovieList movie={movie}/>
-       <div className='box'>
-            <button className='btn-toggle' onClick={()=>setisOpen2((open)=>!open)}>
-                {isOpen2 ? '-' : '+'}
-            </button>
-            { isOpen2 &&
-         <> 
-          <Movie avgimdbRating={avgimdbRating}  avgruntime={avgruntime} avguserRating={avguserRating}/>
-          <WachedList watched={watched}/>
-         </>}
-       </div>
+      {/*Load ? <Loader/> :  <MovieList movie={movie}/>*/}
+
+      {
+        Load && <Loader />
+      }
+
+      {!Load && !error && <MovieList movie={movie} onSelected={onSelected} />}
+
+      {
+        error && <ErrorMessage message={error} />
+      }
+      <div className='box'>
+        <button className='btn-toggle' onClick={() => setisOpen2((open) => !open)}>
+          {isOpen2 ? '-' : '+'}
+        </button>
+       {  selectedID ? <MovieDetails selectedID={selectedID} onCloseMovie={onCloseMovie} /> :
+        <>
+          {isOpen2 &&
+            <>
+              <Movie avgimdbRating={avgimdbRating} avgruntime={avgruntime} avguserRating={avguserRating} />
+
+              <WachedList watched={watched} />
+
+            </>}  </> }
+      </div>
     </main>
   )
 }

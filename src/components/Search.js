@@ -1,7 +1,6 @@
 import React from 'react'
-import { useState } from 'react'
-const Search = () => {
-    const [query,setquery]=useState('')
+
+const Search = ({query,setquery}) => {
 
     return (
         <div>

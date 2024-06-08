@@ -6,7 +6,7 @@ import Navbar from './components/Navbar';
 import NumMovies from './components/NumMovies';
 import Logo from './components/Logo';
 import Search from './components/Search';
-const tempMovieData = [
+/*const tempMovieData = [
   {
     imdbID: "tt1375666",
     Title: "Inception",
@@ -51,41 +51,76 @@ const tempWatchedData = [
     imdbRating: 8.5,
     userRating: 9,
   },
-];
+];*/
 
-const KEY="a97ded1a"
+const KEY = "a97ded1a"
 
 const average = (arr) => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
 
 function App() {
-  const [movie, setmovie] = useState(tempMovieData)
+  const [query,setquery]=useState('')
+  const [movie, setmovie] = useState([])
   const num = movie.length;
-  const [watched, setWatched] = useState(tempWatchedData)
-
+  const [watched, setWatched] = useState([])
+  const [isLoader,setisLoader]=useState(false)
+  const [error,setError]=useState('')
+  const [selectedID,setSelectedID]=useState(null)
   //const [search,setSearch]=useState('')
 
   const avgimdbRating = average(watched.map((movi) => movi.imdbRating))
   const avgruntime = average(watched.map((movi) => movi.runtime))
   const avguserRating = average(watched.map((movi) => movi.userRating))
 
- 
 
-   useEffect( function () {
-    fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=pakistan`)
-    .then((res)=>res.json())
-    .then((data)=>setmovie(data.Search))
-   
-  },[])
-  
+ function handleSelectedMovie(id){
+    setSelectedID((selectedID)=>selectedID === id ? null : id)
+ }
+
+ function handleCloseMovie(){
+   setSelectedID(null)
+ }
+
+
+  useEffect(function () {
+    async function fetchData() {
+      try{
+        setError('')
+      setisLoader(true)
+      const res = await fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+      
+      if(!res.ok) throw new Error('Some thing Wrong Happend')
+
+      const data = await res.json();
+
+      if(data.Response === 'False') throw new Error('Movie Not Found')
+
+      setmovie(data.Search);
+} catch(err){
+  console.error(err.message)
+  setError(err.message)
+} finally{
+  setisLoader(false)
+}
+    }
+
+  if(query.length < 3){
+    setmovie([])
+    setError('')
+    return
+  }
+
+    fetchData();
+  }, [query])
+
 
   return (
     <div className="App">
       <Navbar >
         <Logo />
-        <Search/>
+        <Search  query={query} setquery={setquery}/>
         <NumMovies num={num} />
       </Navbar>
-      <BoxList movie={movie} watched={watched} avgimdbRating={avgimdbRating} avgruntime={avgruntime} avguserRating={avguserRating} />
+      <BoxList movie={movie} watched={watched} avgimdbRating={avgimdbRating} avgruntime={avgruntime} avguserRating={avguserRating} Load={isLoader} error={error} selectedID={selectedID} onSelected={handleSelectedMovie} onCloseMovie={handleCloseMovie}/>
     </div>
   );
 }

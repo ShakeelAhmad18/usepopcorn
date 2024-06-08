@@ -1,6 +1,6 @@
 import React from 'react'
 import { useState } from 'react'
-const MovieList = ({movie}) => {
+const MovieList = ({movie,onSelected}) => {
   const [isOpen1,setIsOpen1]=useState(true)
 
   return (
@@ -14,9 +14,9 @@ const MovieList = ({movie}) => {
         {isOpen1 ? "–" : "+"}
       </button>
       {isOpen1 && (
-        <ul className="list">
+        <ul className="list list-movies">
           {movie?.map((movie) => (
-            <li key={movie.imdbID}>
+            <li key={movie.imdbID} onClick={()=>onSelected(movie.imdbID)}>
               <img src={movie.Poster} alt={`${movie.Title} poster`} /> 
               <h3>{movie.Title}</h3>
               <div>
