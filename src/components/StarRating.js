@@ -31,7 +31,7 @@ const textStyle={
  
 
 
-const StarRating = ({maxRating = 5,color='#fcc419',size=48,message=[]}) => {
+const StarRating = ({maxRating = 5,color='#fcc419',size=48,message=[],onSetRating}) => {
 
     const containerStyle={
         display:'flex',
@@ -45,6 +45,7 @@ const StarRating = ({maxRating = 5,color='#fcc419',size=48,message=[]}) => {
 
   function handleRating(rating) {
        setRating(rating)
+       onSetRating(rating)
   } 
   return (
     <div style={containerStyle}>

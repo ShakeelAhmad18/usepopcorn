@@ -5,7 +5,7 @@ import Movie from './Movie'
 import Loader from './Loader'
 import ErrorMessage from './ErrorMessage'
 import MovieDetails from './MovieDetails'
-const BoxList = ({ movie, watched, avgimdbRating, avgruntime, avguserRating, Load, error, selectedID, onSelected,onCloseMovie }) => {
+const BoxList = ({ movie, watched, avgimdbRating, avgruntime, avguserRating, Load, error, selectedID, onSelected,onCloseMovie,onAddWatched,onDeleteWatched}) => {
   const [isOpen2, setisOpen2] = useState(true)
 
   return (
@@ -26,13 +26,13 @@ const BoxList = ({ movie, watched, avgimdbRating, avgruntime, avguserRating, Loa
         <button className='btn-toggle' onClick={() => setisOpen2((open) => !open)}>
           {isOpen2 ? '-' : '+'}
         </button>
-       {  selectedID ? <MovieDetails selectedID={selectedID} onCloseMovie={onCloseMovie} /> :
+       {  selectedID ? <MovieDetails selectedID={selectedID} onCloseMovie={onCloseMovie} onAddWatched={onAddWatched} watched={watched} /> :
         <>
           {isOpen2 &&
             <>
               <Movie avgimdbRating={avgimdbRating} avgruntime={avgruntime} avguserRating={avguserRating} />
 
-              <WachedList watched={watched} />
+              <WachedList watched={watched} onDeleteWatched={onDeleteWatched} />
 
             </>}  </> }
       </div>

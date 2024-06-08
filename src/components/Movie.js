@@ -12,11 +12,11 @@ const Movie = ({avgimdbRating,avgruntime,avguserRating,watched}) => {
                 </p>
                 <p>
                     <span>⭐️</span>
-                    <span>{avgimdbRating}</span>
+                    <span>{avgimdbRating.toFixed(2)}</span>
                 </p>
                 <p>
                     <span>🌟</span>
-                    <span>{avguserRating}</span>
+                    <span>{avguserRating.toFixed(2)}</span>
                 </p>
                 <p>
                     <span>

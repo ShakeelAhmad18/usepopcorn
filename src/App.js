@@ -65,6 +65,15 @@ function App() {
   const [isLoader,setisLoader]=useState(false)
   const [error,setError]=useState('')
   const [selectedID,setSelectedID]=useState(null)
+  
+  function handleAddWatched(movie){
+       setWatched([...watched,movie])
+  }
+
+ function handleWatchedDelete(id){
+     setWatched(watched.filter(movie=> movie.imdbID !== id))
+ }
+
   //const [search,setSearch]=useState('')
 
   const avgimdbRating = average(watched.map((movi) => movi.imdbRating))
@@ -80,13 +89,13 @@ function App() {
    setSelectedID(null)
  }
 
-
   useEffect(function () {
+    const controller=new AbortController();
     async function fetchData() {
       try{
         setError('')
       setisLoader(true)
-      const res = await fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=${query}`)
+      const res = await fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=${query}`,{signal:controller.signal})
       
       if(!res.ok) throw new Error('Some thing Wrong Happend')
 
@@ -95,21 +104,29 @@ function App() {
       if(data.Response === 'False') throw new Error('Movie Not Found')
 
       setmovie(data.Search);
+      setError('')
 } catch(err){
   console.error(err.message)
-  setError(err.message)
+  if(err.name !== 'AbortError')
+    {
+      setError(err.message)
+    }
 } finally{
   setisLoader(false)
 }
     }
-
   if(query.length < 3){
     setmovie([])
     setError('')
     return
   }
+  
 
     fetchData();
+
+    return function(){
+      controller.abort();
+    }
   }, [query])
 
 
@@ -120,7 +137,7 @@ function App() {
         <Search  query={query} setquery={setquery}/>
         <NumMovies num={num} />
       </Navbar>
-      <BoxList movie={movie} watched={watched} avgimdbRating={avgimdbRating} avgruntime={avgruntime} avguserRating={avguserRating} Load={isLoader} error={error} selectedID={selectedID} onSelected={handleSelectedMovie} onCloseMovie={handleCloseMovie}/>
+      <BoxList movie={movie} watched={watched} avgimdbRating={avgimdbRating} avgruntime={avgruntime} avguserRating={avguserRating} Load={isLoader} error={error} selectedID={selectedID} onSelected={handleSelectedMovie} onCloseMovie={handleCloseMovie} onAddWatched={handleAddWatched} onDeleteWatched={handleWatchedDelete}/>
     </div>
   );
 }
