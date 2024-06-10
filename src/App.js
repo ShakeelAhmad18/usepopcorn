@@ -61,11 +61,15 @@ function App() {
   const [query,setquery]=useState('')
   const [movie, setmovie] = useState([])
   const num = movie.length;
-  const [watched, setWatched] = useState([])
   const [isLoader,setisLoader]=useState(false)
   const [error,setError]=useState('')
   const [selectedID,setSelectedID]=useState(null)
-  
+
+  const [watched, setWatched] = useState(function(){
+     const storedValue=localStorage.getItem('watched')
+     return JSON.parse(storedValue)
+  })
+
   function handleAddWatched(movie){
        setWatched([...watched,movie])
   }
@@ -128,6 +132,12 @@ function App() {
       controller.abort();
     }
   }, [query])
+
+useEffect(function (){
+
+  localStorage.setItem('watched',JSON.stringify(watched))
+
+},[watched])
 
 
   return (
