@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import NumMovies from './components/NumMovies';
 import Logo from './components/Logo';
 import Search from './components/Search';
+import { useMovie } from './customhook/useMovie';
 /*const tempMovieData = [
   {
     imdbID: "tt1375666",
@@ -53,16 +54,16 @@ const tempWatchedData = [
   },
 ];*/
 
-const KEY = "a97ded1a"
+//const KEY = "a97ded1a"
 
 const average = (arr) => arr.reduce((acc, cur, i, arr) => acc + cur / arr.length, 0)
 
 function App() {
   const [query,setquery]=useState('')
-  const [movie, setmovie] = useState([])
+
+  const {movie,isLoader,error}=useMovie(query,handleCloseMovie)
+
   const num = movie.length;
-  const [isLoader,setisLoader]=useState(false)
-  const [error,setError]=useState('')
   const [selectedID,setSelectedID]=useState(null)
 
   const [watched, setWatched] = useState(function(){
@@ -93,46 +94,7 @@ function App() {
    setSelectedID(null)
  }
 
-  useEffect(function () {
-    const controller=new AbortController();
-    async function fetchData() {
-      try{
-        setError('')
-      setisLoader(true)
-      const res = await fetch(`https://www.omdbapi.com/?apikey=${KEY}&s=${query}`,{signal:controller.signal})
-      
-      if(!res.ok) throw new Error('Some thing Wrong Happend')
-
-      const data = await res.json();
-
-      if(data.Response === 'False') throw new Error('Movie Not Found')
-
-      setmovie(data.Search);
-      setError('')
-} catch(err){
-  console.error(err.message)
-  if(err.name !== 'AbortError')
-    {
-      setError(err.message)
-    }
-} finally{
-  setisLoader(false)
-}
-    }
-  if(query.length < 3){
-    setmovie([])
-    setError('')
-    return
-  }
   
-   handleCloseMovie();
-    fetchData();
-
-    return function(){
-      controller.abort();
-    }
-  }, [query])
-
 useEffect(function (){
 
   localStorage.setItem('watched',JSON.stringify(watched))

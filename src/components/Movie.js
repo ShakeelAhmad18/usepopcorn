@@ -22,7 +22,7 @@ const Movie = ({avgimdbRating,avgruntime,avguserRating,watched}) => {
                     <span>
                     ⏳
                     </span>
-                    <span>{avgruntime}</span>
+                    <span>{avgruntime.toFixed(2)}</span>
                 </p>
               </div>
           </div>
